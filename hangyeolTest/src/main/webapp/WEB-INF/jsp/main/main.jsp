@@ -24,7 +24,13 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-</head>
+</head>	
+<style>
+	.cursorpointer{
+	cursor: pointer;
+	font-size: 50px;
+	}
+</style>
 <body>
 	<!-- header -->
 	<c:import url="/etc/headerd"></c:import>
@@ -40,7 +46,7 @@
 		<div class="hero-slider">
 			<c:forEach var="list" items="${list}">
 				<div class="slide-item">
-					<a class="fresco" onclick="location.href='${root}/rmd?midx=${list.midx}'">
+					<a class="fresco" href="">
 						<img src="${list.image}">
 					</a>
 				</div>
@@ -48,8 +54,8 @@
 		</div>
 		<div class="hero-text-slider">
 			<c:forEach var="list" items="${list}">
-				<div class="text-item">
-					<h2>${list.title}</h2>
+				<div class="text-item cursorpointer">
+					<a  onclick="location.href='${root}/rmd?midx=${list.midx}'">${list.title}</a>		
 					<p>예매율 : ${list.percent}</p>
 				</div>
 			</c:forEach>

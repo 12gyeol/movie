@@ -43,7 +43,7 @@
 
 <body class="g-sidenav-show   bg-gray-100">
   <section class="h-100-vh mb-8">
-  <video id="video" src="./img/sign-up/sign-up.mp4" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
+  <video id="video" src="" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
 </video>
       <div class="container">
         <div class="row">
