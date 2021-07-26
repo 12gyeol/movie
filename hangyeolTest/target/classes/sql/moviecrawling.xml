@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moviecrawling">
+
+<!-- 크롤링 값 저장 -->
+	<select id="setMovie" resultType="com.web.maven.movie.MovieVO">
+	insert into rank_movie(midx,rank,title,dday,image,percent,spec,content)
+	values (${midx},#{rank},#{title},#{dday},#{image},#{percent},#{spec},#{content})
+	</select>
+	
+	<select id="selectcrawling" resultType="com.web.maven.movie.MovieVO">
+	select midx,rank,title,image,percent from rank_movie order by id asc limit 7 offset 0
+	</select>
+<!-- midx받아오기 -->
+    <select id="getDetailListRank" parameterType="Integer" resultType="com.web.maven.movie.MovieVO">
+	select title,image,spec,content from rank_movie where midx=${midx}
+	</select>
+</mapper>

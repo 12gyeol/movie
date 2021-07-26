@@ -1,0 +1,3 @@
+function check(){
+	alert('aaa');
+}

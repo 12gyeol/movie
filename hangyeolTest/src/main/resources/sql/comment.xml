@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+	
+ 	<!-- 댓글 출력 -->
+ 	<select id="getComment" parameterType="Integer" resultType="com.web.maven.comment.GetCommentVO">
+		select id,
+			   board_id,
+		       writeid,
+		       username,
+		       regdate,
+		       content
+		 from board_comment
+		where board_id = ${id}
+		 and useFlag='Y'
+ 	</select>
+ 	
+ 	<!-- 댓글 작성 -->
+ 	<select id="setComment" parameterType="com.web.maven.comment.CommentVO">
+		insert into board_comment (board_id,username,writeid,content) value (#{id},#{username},#{writeid},#{content});
+ 	</select>
+ 	
+ 	<!-- 댓글 삭제 -->
+ 	<update id="deleteComment" parameterType="com.web.maven.comment.CommentVO">
+		update board_comment set useFlag='N' where id = ${id}
+	</update>
+	
+	 	<!-- 댓글 삭제 -->
+ 	<update id="modifyComment" parameterType="com.web.maven.comment.CommentVO">
+		update board_comment set content=#{content} where id = ${id} and writeid = #{writeid}
+	</update>
+</mapper>

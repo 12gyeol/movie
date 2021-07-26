@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nextmoviecrawling">
+
+<!-- 크롤링 디비에 보내주기 -->
+	<select id="setNextMovie" parameterType="com.web.maven.movie.MovieVO">
+	insert into next_movie(midx,title,dday,image,spec,content)
+	values (${midx},#{title},#{dday},#{image},#{spec},#{content})
+	</select>
+<!-- 크롤링 디비에 받아오기 -->	
+	<select id="getNextList" resultType="com.web.maven.movie.MovieVO">
+	select midx,title,dday,image from next_movie order by seq asc limit 8 offset 0
+	</select>
+<!-- midx받아오기 -->	
+	<select id="getDetailList" parameterType="Integer" resultType="com.web.maven.movie.MovieVO">
+	select title,image,spec,content from next_movie where midx=${midx}
+	</select>
+</mapper>

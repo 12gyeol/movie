@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Module">
+
+
+	<!-- 게시판 글 필터링 중간 테이블 비교 과정 -->
+	<select id="selectWords"
+		resultType="com.web.maven.content.WordsVO">
+		select Words from forbidden_words
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Content">
+	<!-- contentList -->
+	<sql id="includeCount">
+	   ,(select board_name, board_titleid, boardid 
+		from board_subtitle
+		where useFlag='Y'
+		 )tn
+	   ,(select count(id) as count
+		   from tbl_board 
+		  where useFlag= 'Y'
+		    and boardid = ${boardid}
+		   <if test="f eq 'title'">
+		    and title like concat('%',#{q},'%')
+		   </if>
+		   <if test="f eq 'writeid'">
+		    and (levenshtein(writeid, #{q}) &lt;=2)
+		   </if>
+	       )cnt 
+	       where tn.board_titleid=row.titleid
+	       and tn.boardid=row.boardid
+	</sql>
+	<select id="selectGetList" parameterType="com.web.maven.content.SearchVO" resultType="com.web.maven.content.ContentVO">
+		  <if test="f eq 'title'">
+		select row.* , tn.board_name as titlename ,cnt.count as count
+		  from(select * 
+				 from tbl_board 
+				where title like concat('%',#{q},'%')
+				  and useFlag ='Y' 
+				  and boardid = ${boardid}
+			    order by regdate desc  limit 10 offset ${p})row
+		   </if>
+		     <if test="f eq 'writeid'">
+		   		   select row.* , cnt.count as count
+					 from(select * 
+					        from tbl_board 
+					        where (levenshtein(writeid, #{q}) &lt;= 2) 
+						     and useFlag ='Y' 
+						  and boardid = #{boardid}
+				 order by regdate desc limit 10 offset ${p})row
+		</if>
+		   <include refid="includeCount" />
+	</select>
+	
+	<!-- 상단 메뉴바 에서 전체 리스트 검색(권한별) -->
+	<select id="selectAllList" parameterType="com.web.maven.content.SearchVO" resultType="com.web.maven.content.ContentVO">
+		select row.*, cnt.count
+		  from(select *
+				 from tbl_board
+				where useFlag ='Y' 
+				  and match(title, writeid, content)  against(#{q} in boolean mode)
+				  and boardid in (select boardID 
+								    from user_auth 
+								   where rankcd= #{rank}) 
+							       order by regdate desc  limit 10 offset ${p})row,			       
+			   (select count(id) as count
+							    from tbl_board
+						       where useFlag ='Y' 
+					             and match(title, writeid, content)  against(#{q} in boolean mode)
+							     and boardid in (select boardID 
+					                            from user_auth 
+											      where rankcd= #{rank}))cnt
+	</select>
+	
+	<!-- 게시판 글 자세히 보기 조회 -->
+	<select id="selecDetail" parameterType="Integer" resultType="com.web.maven.content.ContentVO">
+		  SELECT tb.id, bm.board_name as boardname, tb.title, tb.cocnt,tb.writeid, tb.content, tb.regdate, tb.hit ,tb.files,tb.secret,tb.boardid, tb.titleid
+					      FROM tbl_board tb, 
+						          board_master bm 
+					     WHERE bm.board_id = tb.boardid 
+					       AND tb.useFlag = 'Y' 
+					       AND tb.id = ${id}   
+	</select>
+	
+	  <!-- 조회수 -->
+   <update id="upcount" parameterType="com.web.maven.content.ContentVO">
+      update tbl_board set cocnt = cocnt+1 where id = ${id}
+   </update>
+	
+	<!-- 사용자 권한 별 글쓰기 기능 게시판 조회 -->
+	<select id="selectBoardList"  parameterType="String" resultType="com.web.maven.content.ContentVO">
+			select bm.board_id as boardid,
+			       bm.board_name as boardname
+			  from(select board_id,board_name 
+			         from board_master
+			        where useFlag='Y')bm,
+				  (select rankcd,boardID
+			         from user_auth
+				    where useFlag='Y'
+					  and rankcd=#{userRank})ua
+			 where bm.board_id= boardID
+			 
+	</select>
+	<select id="selectBoardsubList"  parameterType="Integer" resultType="com.web.maven.content.ContentVO">
+			 select board_titleid as titleid,board_name as titlename
+			 from board_subtitle
+   			 where boardid=${boardid}
+	</select>
+	
+	<!-- 게시판 글 저장  -->
+	<select id="regeditSave" parameterType="com.web.maven.content.ContentVO">
+		insert into tbl_board(boardid,writeid,title,content,files,titleid,secret) 
+		 value(#{boardid},#{writeid},#{title},#{content},#{files},${titleid},#{secret})
+	</select>
+	
+	<!-- 게시판 글 수정  -->
+	<select id="editContent" parameterType="com.web.maven.content.ContentVO">
+			update tbl_board set title=#{title}, boardid=${boardid}, content=#{content}, titleid=${titleid}, secret=#{secret} where id=${id} 
+	</select>
+	<!-- 글삭제 -->
+	<update id="removelist" parameterType="com.web.maven.content.ContentVO">
+	update tbl_board set useFlag='N' where id = ${id}
+	</update>
+	
+	<!-- 방문자 수 -->
+	<insert id="VisitCountDAO" parameterType="com.web.maven.content.VisitCountVO">
+            INSERT
+            INTO VISIT
+            (
+                seq,
+                date,
+                ip,
+                <if test="visit_refer != null and visit_refer !=''">
+                refer,
+                </if>
+                agent
+            )
+            VALUES
+            (
+              
+                <if test="visit_refer != null and visit_refer !=''">
+                #{refer},
+                </if>
+                #{agent}
+            )
+        </insert>
+	
+</mapper>

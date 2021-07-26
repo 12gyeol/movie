@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+<!-- 로그인 체크 -->
+<select id="LoginCehck" parameterType="com.web.maven.user.LoginVO" resultType="com.web.maven.user.UserVO">
+			select userID as id, 
+					userPass as pass, 
+					userName as name, 
+					userEmail as email, 
+					userRank as rank,
+					commentFlag,
+					regdate
+			   from user 
+			  where flag='Y' 
+			    and userID= #{id} 
+				and userPass = SHA2(#{pass},256)
+</select>
+
+<!-- 회원 가입 시 중복 아이디 체크 -->
+<select id="IdCehck" parameterType="String" resultType="Integer">
+		select count(userID) as cnt from user where userID =#{id}
+</select>
+
+ 	<!-- 입력한 사용자 정보 등록(회원가입) -->
+<select id="registUser" parameterType="com.web.maven.user.UserVO" resultType="Integer">
+		insert into user(userID,userPass,userName,userEmail,birthday,gender)
+	    values(#{id},SHA2(#{pass},256),#{name},#{email},#{birthday},#{gender})
+</select>
+ 	
+ 	
+<!-- 유저 정보 모두 긁어오기 -->
+<select id="userManagesql" resultType="com.web.maven.user.UserVO" >
+		select userID as id, 
+				   userName as name,
+				   userEmail as email,
+				   userRank as rank,
+				   loginFlag,
+				   commentFlag,
+				   writeFlag
+			from user;
+</select>
+
+
+<!-- 스트링으로 디테일값을 받아야한다. -->
+<select id="getDetailStr" parameterType="String" resultType="com.web.maven.user.UserVO" >
+		select userID as id, 
+				   userName as name,
+				   userRank as rank
+			from user
+			where userID = #{id2};
+</select>
+
+<!-- 유저 등급 변경 -->
+	<update id="setGrade" parameterType="com.web.maven.user.UserVO">
+		update user
+		set userRank = #{rank}
+		where userID = #{id};
+	</update>
+	
+	
+	<!-- 스트링으로 디테일값을 받아야한다. -->
+<select id="getCommentFlaginfo" parameterType="String" resultType="com.web.maven.user.UserVO" >
+		select userID as id, 
+				   commentFlag
+			from user
+			where userID = #{id};
+</select>
+	<!-- 댓글 플래그 변경 -->
+	<update id="flagmodify"
+		parameterType="com.web.maven.user.UserVO">
+		update user 
+		set commentFlag = #{commentFlag} 
+		where userID = #{id};
+	</update> 	 	
+	
+	<!-- 로그인한 유저아이디를 이용해서 내가 쓴글을 긁어오자 -->
+<select id="selectbiauserID" parameterType="String" resultType="com.web.maven.content.ContentVO">
+select id,boardid,title,content,regdate
+from tbl_board
+where writeid=#{ui};
+ 
+</select>
+
+<!-- 회원정보 창 -->
+<select id="getUserinfo" parameterType="String" resultType="com.web.maven.user.UserVO">
+select us.userID as id, us.userName as name, us.userEmail as email, us.regdate, us.userRank as rank
+	from user us
+	where us.userID= #{uin};
+ 
+</select>
+
+	<!-- 클릭한 유저 페이지 -->
+<select id="writeuserpage" parameterType="String" resultType="com.web.maven.user.UserVO">
+select userName as name, userRank as rank
+from tbl_board tb, user
+where tb.writeid= user.userID
+and tb.writeid=#{ut};
+</select>
+
+	<!-- 클릭한 유저 페이지 -->
+<select id="writeuserpage2" parameterType="String" resultType="com.web.maven.content.ContentVO">
+select tb.id, tb.boardid, tb.title, tb.content, tb.regdate
+from tbl_board tb, user
+where tb.writeid= user.userID
+and tb.writeid=#{ut};
+</select>
+
+</mapper>
