@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="selectcrawling" resultType="com.web.maven.movie.MovieVO">
-	select midx,rank,title,image,percent from rank_movie order by id asc limit 7 offset 0
+	select midx,idx,rank,title,image,percent from rank_movie order by id asc limit 7 offset 0
 	</select>
 <!-- midx받아오기 -->
     <select id="getDetailListRank" parameterType="Integer" resultType="com.web.maven.movie.MovieVO">

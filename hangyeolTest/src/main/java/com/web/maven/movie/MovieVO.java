@@ -7,6 +7,7 @@ public class MovieVO {
 	
 	int seq;
 	int midx;
+	int idx;
 	String rank;
 	String title;
 	String dday;

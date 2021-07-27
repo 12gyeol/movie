@@ -46,7 +46,6 @@ public class ContentCtr {
 		return "content/ContentList";
 	}
 	  // 게시글 자세히 보기
-	  
 	  @RequestMapping(value = "/detail") public String
 	  getDetail(HttpServletRequest req, ContentVO vo, ModelMap modelMap) {
 	  ContentSvc.getupcocnt(vo.getId());  

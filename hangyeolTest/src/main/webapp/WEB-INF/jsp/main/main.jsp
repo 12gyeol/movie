@@ -30,30 +30,93 @@
 	cursor: pointer;
 	font-size: 50px;
 	}
+
+.modal1 {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 80%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	opacity: 0;
+	visibility: hidden;
+	transform: scale(1.1);
+	transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform
+		0.25s;
+}
+
+.modal-content {
+	position: absolute;
+	top: 30%;
+	left: 60%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	padding: 1rem 1.5rem;
+	width: 800px;
+	height: 500px;
+	border-radius: 0.5rem;
+}
+
+.modal-content .trailer {
+	width: 100%;
+	position: relative;
+}
+
+.close-button {
+	float: right;
+	width: 1.5rem;
+	line-height: 1.5rem;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 0.25rem;
+	background-color: lightgray;
+}
+
+.close-button:hover {
+	background-color: darkgray;
+}
+.show-modal {
+	opacity: 1;
+	visibility: visible;
+	transform: scale(1.0);
+	transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
 </style>
 <body>
 	<!-- header -->
 	<c:import url="/etc/headerd"></c:import>
+
 	<!-- Hero Section -->
 	<section class="hero__section">
-			<div class="hero-text-slider">
+		<div class="hero-text-slider">
 			<c:forEach var="list" items="${list}">
 				<div class="text-item">
 					<h2>${list.rank}</h2>
 				</div>
+				
 			</c:forEach>
 		</div>
 		<div class="hero-slider">
-			<c:forEach var="list" items="${list}">
+			<c:forEach var="list" items="${list}" varStatus="t">
 				<div class="slide-item">
-					<a class="fresco" href="">
+					<button class="aaa" id="${t.count}" onclick=" toggleTrailer(this.id)" value="${list.midx}/${list.midx}_${list.idx}">
 						<img src="${list.image}">
-					</a>
+					</button>
 				</div>
 			</c:forEach>
 		</div>
+
+			<!-- 팝업 될 레이어 -->
+		<div class="modal1">
+			<div class="modal-content">
+				<span class="close-button">&times;</span>
+				<video id="trailer_id" class="trailer" src='' controls autoplay></video>
+			</div>
+		</div>
+		
 		<div class="hero-text-slider">
-			<c:forEach var="list" items="${list}">
+			<c:forEach var="list" items="${list}" varStatus="t">
 				<div class="text-item cursorpointer">
 					<a  onclick="location.href='${root}/rmd?midx=${list.midx}'">${list.title}</a>		
 					<p>예매율 : ${list.percent}</p>
@@ -87,7 +150,7 @@
 	</div>
 	
 	<script type="text/javascript">
-		const modal = document.querySelector(".modal");
+		const modal = document.querySelector(".modal1");
 		const closeButton = document.querySelector(".close-button");
 		const cancelButton = document.querySelector("#cancel");
 
@@ -95,7 +158,6 @@
 			modal.classList.toggle("show-modal");
 		}
 
-		
 		function toggleTrailer(id) {
 			const src = document.getElementById(id).value;
 			const videosrc = document.getElementById('trailer_id');
@@ -113,7 +175,6 @@
 		closeButton.addEventListener("click", toggleOpenClose);
 		window.addEventListener("click", windowOnClick);
 	</script>
-	
 
 	<!--====== Javascripts & Jquery ======-->
 	<script src="${root}/js/main/vendor/jquery-3.2.1.min.js"></script>
