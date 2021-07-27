@@ -81,7 +81,9 @@
 	transform: scale(1.0);
 	transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
-
+.slider{
+border-style:none;
+}
 </style>
 <body>
 	<!-- header -->
@@ -100,7 +102,7 @@
 		<div class="hero-slider">
 			<c:forEach var="list" items="${list}" varStatus="t">
 				<div class="slide-item">
-					<button class="aaa" id="${t.count}" onclick=" toggleTrailer(this.id)" value="${list.midx}/${list.midx}_${list.idx}">
+					<button  class="slider" id="${t.count}" onclick=" toggleTrailer(this.id)" value="${list.midx}/${list.midx}_${list.idx}">
 						<img src="${list.image}">
 					</button>
 				</div>
